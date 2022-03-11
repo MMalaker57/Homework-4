@@ -15,17 +15,17 @@ struct Test_PlotApp: App {
     var body: some Scene {
         WindowGroup {
             TabView {
-                ContentView()
+                ContentView(functional: [(xPoint: 0.0, yPoint: 0.0)])
                     .environmentObject(plotData)
                     .tabItem {
                         Text("Plot")
                     }
-                TextView()
-                    .environmentObject(plotData)
-                    .tabItem {
-                        Text("Text")
-                    }
-                            
+//                TextView()
+//                    .environmentObject(plotData)
+//                    .tabItem {
+//                        Text("Text")
+//                    }
+//
                             
             }
             
