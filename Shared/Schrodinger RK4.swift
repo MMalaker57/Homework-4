@@ -110,7 +110,7 @@ class Schrodinger: NSObject, ObservableObject {
         var currentPsiPrime = psiPrime[0]
         var nextPsiPrime = 0.0
         var currentPsiDoublePrime = 0.0
-        
+        print(potentialV.yArray.count)
     
             for i in stride(from: 0, to: maeta, by: 1){
                
@@ -220,7 +220,8 @@ class Schrodinger: NSObject, ObservableObject {
 //                }
                 
                 
-                print("E= \(E) and currentValue = \(currentValue) and functionalPrime = \(functionalPrime)")
+//                print("E= \(E) and currentValue = \(currentValue) and functionalPrime = \(functionalPrime)")
+
                 let oldE = E
                 E = oldE - (currentValue/functionalPrime)
             

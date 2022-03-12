@@ -38,7 +38,9 @@ struct ContentView: View {
     @State var VString = ""
     @State var eigenString = ""
     @State var VToUse = ""
-    @State var potentials: [String] = ["Square Well"]
+    @State var potentials: [String] = ["Square Well", "Linear Well","Parabolic Well","Square + Linear Well","Square Barrier","Triangle Barrier","Coupled Parabolic Well","Harmonic Oscillator","Kronig - Penney"]
+            
+    
     @State var energies: [String] = ["0 eV"]
     
     @State var psiArray: [(E: Double, psi: [Double])] = []
@@ -127,7 +129,7 @@ struct ContentView: View {
                     self.setParams(lowerXStr: lowerXStr, upperXStr: upperXStr, eMaxStr: maxEStr, eStepStr: eStepStr, xStepStr: xStepStr)
                     energies.removeAll()
                     
-                    self.setV(choice: VString)
+                    self.setV(choice: VToUse)
                     schrodinger.setV(choice: eigenString, xMin: lowerX, xMax: upperX, stepSize: stepInX)
                     Task.init{ psiArray = await self.calculatepsiForAllE(minX: lowerX, maxX: upperX, maxE: maxE, xStep: stepInX, eStep: eStep)
                     }
@@ -181,6 +183,8 @@ struct ContentView: View {
     
     func calculatepsiForAllE(minX: Double, maxX: Double, maxE: Double, xStep: Double, eStep: Double) async->[(E: Double, psi: [Double])]{
         functional.removeAll()
+        potentialV.getPotential(potentialToGet: VToUse, xMin: minX, xMax: maxX, stepSize: xStep)
+        schrodinger.setV(choice: VToUse, xMin: minX, xMax: maxX, stepSize: xStep)
         let psiStruct = await withTaskGroup(of: (E: Double, psi: [Double]).self, returning: [(E: Double, psi: [Double])].self, body: {taskGroup in
             
             var psiData: [(E: Double, psi: [Double])] = []
@@ -220,6 +224,7 @@ struct ContentView: View {
 //        print(psiStruct2)
         energies.removeAll()
         energies.append("Functional")
+        energies.append("Potential")
 //        print(psiStruct2)
         
         
@@ -263,6 +268,12 @@ struct ContentView: View {
             self.plotData.objectWillChange.send()
         }
         else{
+            if eigenString == "Potential"{
+                plotData = schrodinger.potential.contentArray
+                await calculator.plotFunction(data: plotData, labelForX: "X", titleStr: "Potential vs X", lowerE: lowerX, upperE: upperX)
+                self.plotData.objectWillChange.send()
+            }
+            else{
         for i in energies{
             
             if i == "0 eV"{
@@ -270,14 +281,15 @@ struct ContentView: View {
             }
             if i == eigenString{
 
-                pickedPsi = psiArray[count-1].psi
-                print(pickedPsi)
+                pickedPsi = psiArray[count-2].psi
+//                print(pickedPsi)
                 count = 0
                 break
             }
             count += 1
             
         }
+            
             count=0
         for y in pickedPsi{
 //            let dataPoint: plotDataType = [.X: (lowerX + Double(count)*stepInX), .Y: y]
@@ -290,17 +302,49 @@ struct ContentView: View {
             self.plotData.objectWillChange.send()
         
         }
+        }
     }
     
     
     func setV(choice: String){
-        
+        print(VString)
         switch VString{
         case "Square Well":
-            
             VToUse = "Square Well"
-
+            print(VToUse)
+        case "Linear Well":
+            VToUse = "Linear Well"
+            print(VToUse)
+            
+        case "Parabolic Well":
+            VToUse = "Parabolic Well"
+            print(VToUse)
+            
+        case "Square + Linear Well":
+            VToUse = "Square + Linear Well"
+            print(VToUse)
+            
+        case "Square Barrier":
+            VToUse = "Square Barrier"
+            print(VToUse)
+            
+        case "Triangle Barrier":
+            VToUse = "Triangle Barrier"
+            print(VToUse)
+            
+        case "Coupled Parabolic Well":
+            VToUse = "Coupled Parabolic Well"
+            print(VToUse)
+            
+        case "Harmonic Oscillator":
+            VToUse = "Harmonic Oscillator"
+            print(VToUse)
+            
+        case "Kronig - Penney":
+            VToUse = "Kronig - Penney"
+            print(VToUse)
         default:
+            print("Resorting to Square Well")
             VToUse = "Square Well"
         }
     }
